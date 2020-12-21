@@ -1,0 +1,115 @@
+<html>
+<head>
+    <title>Aligner</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta name="HandheldFriendly" content="True">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/'-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="style.css" rel="stylesheet" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="GridBuilder.js"></script>
+</head>
+
+<script>
+function restart(){
+    clear();
+   GridBuilder.highlightOptimal(DropDown.getType().trim());
+   DropDown.makeDropDown();
+}
+
+function clear(){
+    var cont = $('#cont');
+    var resultContainer = $('#result');
+    var matchScore = parseInt($('#matchScore').val());
+    var mismatchScore = parseInt($('#mismatchScore').val());
+    var gapScore = parseInt($('#gapScore').val());
+    var seqSide = $('#seq_1').val();
+    var seqTop = $('#seq_2').val();
+    var dropdownTitle = document.querySelectorAll('.dropdown .title');
+    var alignType = DropDown.getType();
+    console.log(alignType);
+
+    GridBuilder.rebuildTable(cont, resultContainer, matchScore, mismatchScore, gapScore, seqSide, seqTop, alignType.trim());
+}
+
+$(document).ready(function(){
+
+
+
+    restart();
+    /*
+    var ids = ["9_9", "9_8", "9_7", "8_6", "7_6", "6_5", "5_4", "5_3", "4_2", "3_2", "2_2", "1_1"];
+    var ids = ["9_10", "9_9", "8_8", "7_7", "6_6", "5_5", "4_4", "3_4", "2_3", "1_2"];
+    var ids = ["9_9", "9_8", "8_7", "7_6", "6_5", "5_4", "4_3", "3_3", "2_2", "1_1"];
+    for(idx in ids){
+        $('#' + ids[idx]).click();
+    }
+    */
+
+    $('.seq').keyup(function(){
+        restart();
+    });
+
+   $('.params').change(function(){
+        restart();
+    });
+
+    $('.btn-clear').click(function(){
+        clear();
+    });
+
+    $('.btn-compute').click(function(){
+        restart();
+    });
+
+    $('.btn-custom').click(function(){
+        GridBuilder.startCustomPath();
+    });
+
+});
+
+</script>
+<h2>Sequence Alignment Visualizer</h2>
+<p>
+This is our final project for CS466 at UIUC. Our goal is to extend the pre-existing aligner available at http://experiments.mostafa.io/public/needleman-wunsch/ to support fitting and local alignment.
+</p>
+<table>
+<tr>
+    <td><label>Sequence 1</label></td>
+    <td colspan="4"><input id="seq_1" class='seq' value="GATTACA" maxlength="20" /></label></td>
+    <td rowspan="10" id="result"></td>
+</tr>
+<tr>
+    <td><label>Sequence 2</label></td>
+    <td colspan="4"><input id="seq_2" class='seq' value="GTCGACG" maxlength="20" /></td>
+ </tr>
+<tr colspan="4">
+    <th><label>Match Score</label></th>
+    <th><label>Mismatch Score</label></th>
+    <th><label>Gap Score</label></th>
+    <th><label>Alignment Type</label></th>
+</tr>
+<tr>
+    <td><input class="params" id="matchScore" type="number" value="1" /></td>
+    <td><input class="params" id="mismatchScore" type="number" value="-1" /></td>
+    <td><input class="params" id="gapScore" type="number" value="-2" /></td>
+    <td><div class='dropdown' id='dd'>
+		    <div class='title pointerCursor' id='title'>Global<i class="fa fa-angle-right"></i></div>
+
+    		<div class='menu pointerCursor hide' id='options'>
+    			<div class='option' id='global'>Global</div>
+    			<div class='option' id='fitting'>Fitting</div>
+    			<div class='option' id='local'>Local</div>
+    		</div>
+    </div></td>
+</tr>
+<tr>
+<td colspan="4">
+        <button class="btn-compute">Compute Optimal Alignment</button>
+        <button class="btn-clear">Clear Path</button>
+        <button class="btn-custom">Custom Path</button>
+</tr>
+
+</table>
+<div id="cont"></div>
+</body>
+</html>
